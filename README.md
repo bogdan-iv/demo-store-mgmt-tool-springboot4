@@ -1,31 +1,35 @@
 # demo-store-mgmt-tool
-Spring Boot Store Management Tool Demo
+Spring Boot 4 Store Management Tool Demo
 # Store Management API (v1)
 
-A simple, secure RESTful API for managing a product catalog using Spring Boot, an H2 in-memory database, and HTTP Basic Authentication.
+A simple, secure RESTful API for managing a product catalog using Spring Boot 4, an H2 in-memory database, and HTTP Basic Authentication.
 
 ## Features
 
+*   **Platform:** Built with Spring Boot 4.0 and requires **Java 25+**.
+*   **Performance:** Uses **Java Virtual Threads** (`spring.threads.virtual.enabled=true`) for high concurrency and efficient I/O operations.  
 *   **CRUD Operations:** Add, find, update price, delete products following RESTful conventions.
 *   **Search Functionality:** Filter products by name or get total count.
 *   **Security:** HTTP Basic Authentication with role-based access control (`USER` and `ADMIN` roles).
 *   **Data Storage:** H2 in-memory database for local development. 
-*   **Error Handling:** Global exception handling for consistent API responses (HTTP 409 Conflict for concurrency errors).
+*   **Error Handling:** Global exception handling for consistent API responses (HTTP 409, 400, 404, 403).
 *   **Validation:** Jakarta Bean Validation for input integrity.
 *   **API Versioning:** All endpoints are prefixed with `/api/v1/`.
-*   **Concurrency Control:** Implemented **Optimistic Locking** using `@Version` fields to manage simultaneous updates without locking the database.
+*   **Concurrency Control:** Implements **Optimistic Locking** using `@Version` fields to safely manage simultaneous updates (returns HTTP 409 Conflict on mismatch).
 *   **Transaction Management:** Configured service layer with `@Transactional` (including `readOnly` optimizations) for data integrity.
+*   **RESTful Design:** Uses standard REST conventions (PUT requests with body data, clean URLs, `/search` and `/count` endpoints).
 
 ## Technologies Used
 
-*   **Java:** JDK 17+
-*   **Framework:** Spring Boot 3.1+
+
+*   **Java:** JDK 25+
+*   **Framework:** Spring Boot 4.0, Spring Security 7.0, Spring Framework 7.0
 *   **Build Tool:** Maven
 *   **Database:** H2 In-Memory Database
 *   **Authentication:** Spring Security (HTTP Basic Auth)
 *   **Validation:** Jakarta Bean Validation
-*   **Testing:** JUnit 5, Mockito, Spring Test (MockMvc/WebTestClient)
-*   **Utility:** Lombok (for boilerplate reduction)
+*   **Testing:** JUnit 5, WebTestClient, Spring Security Test
+*   **Utility:** Lombok
 
 ## Getting Started
 
@@ -39,7 +43,7 @@ A simple, secure RESTful API for managing a product catalog using Spring Boot, a
 1.  **Clone the repository:**
     ```bash
     git clone github.com
-    cd demo-store-mgmt-tool
+    cd demo-store-mgmt-tool-springboot4
     ```
 
 2.  **Build the project:**
