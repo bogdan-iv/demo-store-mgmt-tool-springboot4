@@ -53,9 +53,9 @@ public class ProductController {
 
     @GetMapping("/search")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<ProductResponse>> findProducts(@RequestParam String name) {
-        logger.info("Searching products by name: {}", name);
-        List<Product> products = productService.findProductsByNameContaining(name);
+    public ResponseEntity<List<ProductResponse>> findProducts(@RequestParam String searchTerm) {
+        logger.info("Searching products by name: {}", searchTerm);
+        List<Product> products = productService.findProductsByNameContaining(searchTerm);
         return ResponseEntity.ok(products.stream().map(this::toResponse).toList());
     }
 
