@@ -25,7 +25,7 @@ public class User {
     @Column(name = "enabled")
     private boolean enabled;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "username", referencedColumnName = "username")
     private Set<Authority> authorities;
 }

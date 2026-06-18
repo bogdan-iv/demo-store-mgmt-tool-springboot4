@@ -178,6 +178,27 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
+    void testAddProduct_ZeroPrice_ShouldFailWith400() {
+        // Price 0 passes DTO @Min(0) but fails service validation (must be > 0)
+        AddProductRequest request = new AddProductRequest("Keyboard", BigDecimal.ZERO);
+
+        webTestClient.post().uri("/api/v1/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isBadRequest();
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void testDelete_NotFound_ShouldReturn404() {
+        webTestClient.delete().uri("/api/v1/products/{id}", 9999L)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
     void testDelete() {
         // Pre-populate test DB with an item to delete
         Product itemToDelete = productRepository.save(new Product(null, "Temp Item", BigDecimal.valueOf(10.00), 1L));

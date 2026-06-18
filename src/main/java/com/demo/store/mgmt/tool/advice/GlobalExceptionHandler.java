@@ -47,12 +47,18 @@ public class GlobalExceptionHandler {
 
     // Handles validation errors (e.g., @NotBlank or @Min constraints failing)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage())
         );
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                "Validation failed: " + errors,
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     // Handles the 403 FORBIDDEN error

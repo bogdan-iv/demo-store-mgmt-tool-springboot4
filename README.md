@@ -35,7 +35,7 @@ A simple, secure RESTful API for managing a product catalog using Spring Boot 4,
 
 ### Prerequisites
 
-*   JDK 17 or higher installed.
+*   JDK 25 or higher installed.
 *   Maven installed (optional if using the included `mvnw` wrapper).
 
 ### Installation

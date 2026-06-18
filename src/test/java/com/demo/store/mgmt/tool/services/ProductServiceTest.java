@@ -113,6 +113,51 @@ public class ProductServiceTest {
     }
 
     @Test
+    public void testAddProduct_NegativePrice_ThrowsException() {
+        AddProductRequest badRequest = new AddProductRequest("Test", BigDecimal.valueOf(-10.00));
+        ProductValidationException thrown = Assertions.assertThrows(
+                ProductValidationException.class,
+                () -> productService.addProduct(badRequest)
+        );
+        assertThat(thrown.getMessage()).contains("Price must be greater than zero");
+        verify(productRepository, times(0)).save(any(Product.class));
+    }
+
+    @Test
+    public void testAddProduct_ZeroPrice_ThrowsException() {
+        AddProductRequest badRequest = new AddProductRequest("Test", BigDecimal.ZERO);
+        ProductValidationException thrown = Assertions.assertThrows(
+                ProductValidationException.class,
+                () -> productService.addProduct(badRequest)
+        );
+        assertThat(thrown.getMessage()).contains("Price must be greater than zero");
+        verify(productRepository, times(0)).save(any(Product.class));
+    }
+
+    @Test
+    public void testAddProduct_NullPrice_ThrowsException() {
+        AddProductRequest badRequest = new AddProductRequest("Test", null);
+        ProductValidationException thrown = Assertions.assertThrows(
+                ProductValidationException.class,
+                () -> productService.addProduct(badRequest)
+        );
+        assertThat(thrown.getMessage()).contains("Price must be greater than zero");
+        verify(productRepository, times(0)).save(any(Product.class));
+    }
+
+    @Test
+    public void testDeleteProduct_NotFound_ThrowsException() {
+        when(productRepository.existsById(99L)).thenReturn(false);
+
+        ProductNotFoundException thrown = Assertions.assertThrows(
+                ProductNotFoundException.class,
+                () -> productService.deleteProduct(99L)
+        );
+        assertThat(thrown.getMessage()).contains("Product not found with ID: 99");
+        verify(productRepository, times(0)).deleteById(anyLong());
+    }
+
+    @Test
     public void testChangePrice_Success() {
         BigDecimal newPrice = BigDecimal.valueOf(1250.00);
 

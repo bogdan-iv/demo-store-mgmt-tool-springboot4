@@ -1,13 +1,10 @@
 package com.demo.store.mgmt.tool.services;
 
-import com.demo.store.mgmt.tool.controllers.ProductController;
 import com.demo.store.mgmt.tool.dto.AddProductRequest;
-import com.demo.store.mgmt.tool.exception.ConcurrencyConflictException;
 import com.demo.store.mgmt.tool.exception.ProductNotFoundException;
 import com.demo.store.mgmt.tool.exception.ProductValidationException;
 import com.demo.store.mgmt.tool.models.Product;
 import com.demo.store.mgmt.tool.repositories.ProductRepository;
-import jakarta.persistence.OptimisticLockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,6 +25,9 @@ public class ProductService {
     }
 
     public Product addProduct(AddProductRequest productRequest) {
+        if (productRequest.price() == null || productRequest.price().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ProductValidationException("Price must be greater than zero");
+        }
         Product newProduct = new Product();
         newProduct.setName(productRequest.name());
         newProduct.setPrice(productRequest.price());
@@ -58,22 +58,19 @@ public class ProductService {
         if (newPrice == null || newPrice.compareTo(BigDecimal.ZERO) <= 0) {
             throw new ProductValidationException("New price must be greater than zero");
         }
-        try {
-            Optional<Product> productOpt = productRepository.findById(id);
-            if (productOpt.isEmpty()) {
-                throw new ProductNotFoundException(id);
-            }
-            Product product = productOpt.get();
-            product.setPrice(newPrice);
-            return productRepository.save(product);
-        } catch (OptimisticLockException ex) {
-            logger.error(ex.getMessage());
-            // Log the error and rethrow as a domain-specific exception if needed
-            throw new ConcurrencyConflictException("Conflict occurred updating product " + id);
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isEmpty()) {
+            throw new ProductNotFoundException(id);
         }
+        Product product = productOpt.get();
+        product.setPrice(newPrice);
+        return productRepository.save(product);
     }
 
     public void deleteProduct(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new ProductNotFoundException(id);
+        }
         productRepository.deleteById(id);
     }
 
