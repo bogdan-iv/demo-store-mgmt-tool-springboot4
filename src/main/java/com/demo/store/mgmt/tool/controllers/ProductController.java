@@ -29,48 +29,51 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Product> addProduct(@RequestBody @Valid AddProductRequest productRequest) {
+    public ResponseEntity<ProductResponse> addProduct(@RequestBody @Valid AddProductRequest productRequest) {
         Product savedProduct = productService.addProduct(productRequest);
-        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+        return new ResponseEntity<>(toResponse(savedProduct), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ProductResponse> findProductById(@PathVariable Long id) {
         return productService.findProductById(id)
-                .map(product -> new ProductResponse(product.getId(), product.getName(), product.getPrice()))
+                .map(this::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<Product>> findAllProducts() {
+    public ResponseEntity<List<ProductResponse>> findAllProducts() {
         logger.info("Fetching all products");
         List<Product> products = productService.findAllProducts();
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(products.stream().map(this::toResponse).toList());
     }
 
     @GetMapping("/search")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<Product>> findProducts(@RequestParam String name) {
+    public ResponseEntity<List<ProductResponse>> findProducts(@RequestParam String name) {
         logger.info("Searching products by name: {}", name);
         List<Product> products = productService.findProductsByNameContaining(name);
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(products.stream().map(this::toResponse).toList());
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Product> changeProductPrice(
+    public ResponseEntity<ProductResponse> changeProductPrice(
             @PathVariable Long id,
             @Valid @RequestBody UpdatePriceRequest priceRequest) {
         logger.info("Updating price for product ID: {} to {}", id, priceRequest.newPrice());
 
-        // Pass the value from the DTO record to the service
         Product updatedProduct = productService.changeProductPrice(id, priceRequest.newPrice());
 
         logger.info("Price updated successfully for product ID: {}", id);
-        return ResponseEntity.ok(updatedProduct);
+        return ResponseEntity.ok(toResponse(updatedProduct));
+    }
+
+    private ProductResponse toResponse(Product product) {
+        return new ProductResponse(product.getId(), product.getName(), product.getPrice());
     }
 
     @DeleteMapping("/{id}")

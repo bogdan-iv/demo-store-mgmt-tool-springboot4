@@ -1,6 +1,7 @@
 package com.demo.store.mgmt.tool.controllers;
 
 import com.demo.store.mgmt.tool.dto.AddProductRequest;
+import com.demo.store.mgmt.tool.dto.ProductResponse;
 import com.demo.store.mgmt.tool.dto.UpdatePriceRequest;
 import com.demo.store.mgmt.tool.models.Product;
 import com.demo.store.mgmt.tool.repositories.ProductRepository;
@@ -127,11 +128,11 @@ public class ProductControllerTest {
         webTestClient.get().uri("/api/v1/products")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(Product.class) // Expect a list of Product objects back
+                .expectBodyList(ProductResponse.class) // Expect a list of ProductResponse objects back
                 .hasSize(2)
                 .value(products -> {
                     // AssertJ assertions on the resulting list
-                    assertThat(products.get(0).getName()).isEqualTo("Laptop");
+                    assertThat(products.get(0).name()).isEqualTo("Laptop");
                 });
     }
 
