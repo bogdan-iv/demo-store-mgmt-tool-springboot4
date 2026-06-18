@@ -28,10 +28,7 @@ public class ProductServiceOptimisticLockTest {
 
     @Test
     public void testChangePrice_OptimisticLock_ThrowsException() {
-        Product product = new Product();
-        product.setId(1L);
-        product.setName("Laptop");
-        product.setPrice(BigDecimal.valueOf(1200.00));
+        Product product = new Product(1L, "Laptop", BigDecimal.valueOf(1200.00), null);
 
         when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
         when(productRepository.save(any(Product.class)))

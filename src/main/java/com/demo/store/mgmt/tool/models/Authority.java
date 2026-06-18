@@ -1,14 +1,15 @@
 package com.demo.store.mgmt.tool.models;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "authorities")
-@Getter // Use specific getters rather than @Data
-@Setter // Use specific setters
-@NoArgsConstructor // The essential no-arg constructor for JPA
-@AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class Authority {
 
     // An auto-incrementing ID for the authority record itself

@@ -42,15 +42,8 @@ public class ProductServiceTest {
 
     @BeforeEach
     public void setUp() {
-        product1 = new Product();
-        product1.setId(1L);
-        product1.setName("Laptop");
-        product1.setPrice(BigDecimal.valueOf(1200.00));
-
-        product2 = new Product();
-        product2.setId(2L);
-        product2.setName("Mouse");
-        product2.setPrice(BigDecimal.valueOf(25.00));
+        product1 = new Product(1L, "Laptop", BigDecimal.valueOf(1200.00), null);
+        product2 = new Product(2L, "Mouse", BigDecimal.valueOf(25.00), null);
     }
 
 
