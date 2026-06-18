@@ -140,14 +140,14 @@ public class ProductServiceTest {
 
     @Test
     public void testDeleteProduct_NotFound_ThrowsException() {
-        when(productRepository.existsById(99L)).thenReturn(false);
+        when(productRepository.findById(99L)).thenReturn(Optional.empty());
 
         ProductNotFoundException thrown = Assertions.assertThrows(
                 ProductNotFoundException.class,
                 () -> productService.deleteProduct(99L)
         );
         assertThat(thrown.getMessage()).contains("Product not found with ID: 99");
-        verify(productRepository, times(0)).deleteById(anyLong());
+        verify(productRepository, times(0)).delete(any(Product.class));
     }
 
     @Test
